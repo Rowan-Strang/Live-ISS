@@ -1,50 +1,52 @@
 import { useState, useEffect } from 'react'
 
-import { getAmiiboWithName } from '../apiClient.ts'
-import { AmiiboCollection } from '../../models/amiibo.ts'
+import { getIss } from '../apiClient.ts'
+import { Iss } from '../../models/iss.ts'
 
-function App() {
-  const [collection, setCollection] = useState<AmiiboCollection | null>(null)
+function OurApp() {
+  const [satellite, setSatellite] = useState<Iss | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  // useEffect cannot return a promise, so we often define
-  // an async function _inside_ the useEffect call
   useEffect(() => {
-    async function update() {
-      const data = await getAmiiboWithName('Link')
+    const intervalId = setInterval(async () => {
       try {
-        setCollection(data)
+        const data = await getIss('Link')
+        setSatellite(data)
       } catch (err) {
         setError(String(err))
       }
-    }
-
-    update()
-    // we list zero dependencies here, (i.e. an empty array) so that our
-    // function is called when the component mounts first and we give no reasons why the function
-    // needs to be run again
+    }, 1055)
+    return () => clearInterval(intervalId)
   }, [])
 
   if (error) {
     return <p>Something went wrong: {error}</p>
   }
 
-  if (!collection) {
+  if (!satellite) {
     return <>Loading...</>
   }
 
+  // const keys = Object.keys(satellite)
+  // console.log(keys)
+
   return (
-    <ul>
-      {collection.amiibo.map((value) => (
-        <li key={value.head + value.tail}>
-          <h3>
-            {value.name} - {value.amiiboSeries}
-          </h3>
-          <img src={value.image} alt={value.name} />
-        </li>
-      ))}
-    </ul>
+    <>
+      <h2>This is the ISS</h2>
+      <p>
+        <b>Latitude</b>: {satellite.latitude}
+      </p>
+      <p>
+        <b>Longitude</b>: {satellite.longitude}
+      </p>
+      <p>
+        <b>Altitude</b>: {satellite.altitude.toFixed(3)}
+      </p>
+      <p>
+        <b>Velocity</b>: {satellite.velocity.toFixed(3)}
+      </p>
+    </>
   )
 }
 
-export default App
+export default OurApp

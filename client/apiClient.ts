@@ -1,14 +1,11 @@
 import request from 'superagent'
-import { AmiiboCollection } from '../models/amiibo.ts'
 
-// *** EXAMPLE ***
-export async function getAmiiboWithName(
-  name: string
-): Promise<AmiiboCollection> {
+import { Iss } from '../models/iss.ts'
+
+export async function getIss(name: string): Promise<Iss> {
   const response = await request
-    .get(`https://www.amiiboapi.com/api/amiibo/`)
+    .get('https://api.wheretheiss.at/v1/satellites/25544')
     .query({ name })
 
   return response.body
 }
-// ***   ***   ***
