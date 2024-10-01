@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-
 import { getIss } from '../apiClient.ts'
 import { Iss } from '../../models/iss.ts'
 
@@ -26,9 +25,6 @@ function OurApp() {
   if (!satellite) {
     return <>Loading...</>
   }
-
-  // const keys = Object.keys(satellite)
-  // console.log(keys)
 
   return (
     <>
